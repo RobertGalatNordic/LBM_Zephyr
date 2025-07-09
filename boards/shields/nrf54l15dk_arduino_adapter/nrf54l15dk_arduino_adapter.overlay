@@ -52,13 +52,13 @@ arduino_i2c: &i2c20 {
 };
 
 /* Arduino UART mapping to nrf54l15dk UART21 */
-arduino_serial: &uart21 {
-    status = "okay";
-    current-speed = <115200>;
-    pinctrl-0 = <&uart21_default_alt>;
-    pinctrl-1 = <&uart21_sleep_alt>;
-    pinctrl-names = "default", "sleep";
-};
+// arduino_serial: &uart21 {
+//     status = "okay";
+//     current-speed = <115200>;
+//     pinctrl-0 = <&uart21_default_alt>;
+//     pinctrl-1 = <&uart21_sleep_alt>;
+//     pinctrl-names = "default", "sleep";
+// };
 
 /* Pin control configurations */
 &pinctrl {
@@ -97,20 +97,20 @@ arduino_serial: &uart21 {
     };
 
     /* UART pin configuration */
-    uart21_default_alt: uart21_default_alt {
-        group1 {
-            psels = <NRF_PSEL(UART_TX, 0, 6)>,    /* D14 - TX */
-                <NRF_PSEL(UART_RX, 0, 7)>;        /* D15 - RX */
-        };
-    };
+    // uart21_default_alt: uart21_default_alt {
+    //     group1 {
+    //         psels = <NRF_PSEL(UART_TX, 0, 6)>,    /* D14 - TX */
+    //             <NRF_PSEL(UART_RX, 0, 7)>;        /* D15 - RX */
+    //     };
+    // };
 
-    uart21_sleep_alt: uart21_sleep_alt {
-        group1 {
-            psels = <NRF_PSEL(UART_TX, 0, 6)>,
-                <NRF_PSEL(UART_RX, 0, 7)>;
-            low-power-enable;
-        };
-    };
+    // uart21_sleep_alt: uart21_sleep_alt {
+    //     group1 {
+    //         psels = <NRF_PSEL(UART_TX, 0, 6)>,
+    //             <NRF_PSEL(UART_RX, 0, 7)>;
+    //         low-power-enable;
+    //     };
+    // };
 }; 
 
 / {
@@ -119,8 +119,19 @@ arduino_serial: &uart21 {
         smtc-hal-uart = &uart20;
         smtc-watchdog = &wdt31;
     };
+
+    zephyr,user {
+        /* PINS used for the HW modem sample. */
+        hw-modem-command-gpios = <&gpio1 8  (GPIO_ACTIVE_HIGH|GPIO_PULL_UP)>;
+        hw-modem-busy-gpios =  <&gpio1 9 GPIO_ACTIVE_HIGH>;
+        hw-modem-event-gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+        hw-modem-led-scan-gpios =<&gpio1 12 GPIO_ACTIVE_HIGH>;
+    };
 };
 
+&uart20 {
+	/delete-property/ hw-flow-control;
+};
 
 /* Configuration needed for LR1110 module on nrf54 boards */
 
